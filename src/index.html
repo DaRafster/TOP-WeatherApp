@@ -3,10 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./style.css" />
     <title>Weather App</title>
   </head>
   <body>
-    <script src="./index.js"></script>
+    <div class="content">
+      <div class="search-header">
+        <form id="weatherLocationForm" action="">
+          <input
+            type="text"
+            name="locationInput"
+            id="locationInput"
+            placeholder="enter location"
+          />
+        </form>
+      </div>
+      <div class="current-weather-container"></div>
+      <div class="hourly-weather-container"></div>
+      <div class="future-forecast-container"></div>
+    </div>
   </body>
 </html>
