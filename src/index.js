@@ -6,7 +6,7 @@ import Wind from './images/wind.png';
 async function fetchWeatherData(location) {
   try {
     const weatherRequest = await fetch(
-      `http://api.weatherapi.com/v1/forecast.json?key=30b5cfde87b54bedbce23620242106&q=${location}&days=3`
+      `https://api.weatherapi.com/v1/forecast.json?key=30b5cfde87b54bedbce23620242106&q=${location}&days=3`
     );
 
     if (!weatherRequest.ok) {
