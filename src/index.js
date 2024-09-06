@@ -4,12 +4,26 @@ import Rain from './images/rain.png';
 import Wind from './images/wind.png';
 
 async function fetchWeatherData(location) {
-  const weatherRequest = await fetch(
-    `http://api.weatherapi.com/v1/forecast.json?key=30b5cfde87b54bedbce23620242106&q=${location}&days=3`
-  );
-  const weatherData = await weatherRequest.json();
-  console.log(weatherData);
-  return weatherData;
+  try {
+    const weatherRequest = await fetch(
+      `http://api.weatherapi.com/v1/forecast.json?key=30b5cfde87b54bedbce23620242106&q=${location}&days=3`
+    );
+
+    if (!weatherRequest.ok) {
+      throw new Error(`${weatherRequest.status}`);
+    }
+
+    const errorLocation = document.querySelector('#error-location');
+    errorLocation.style.visibility = 'hidden';
+
+    const weatherData = await weatherRequest.json();
+    return weatherData;
+  } catch (error) {
+    const errorLocation = document.querySelector('#error-location');
+    errorLocation.style.visibility = 'visible';
+    console.log(error);
+    return Promise.reject(error);
+  }
 }
 
 function createHourlyWeatherCard(hourData) {
@@ -115,86 +129,90 @@ async function displayCurrentWeather(loc) {
     location = loc;
   }
 
-  const weatherData = await fetchWeatherData(location);
-  const weatherCard = document.createElement('div');
-  weatherCard.classList.add('weatherCard');
+  try {
+    const weatherData = await fetchWeatherData(location);
+    const weatherCard = document.createElement('div');
+    weatherCard.classList.add('weatherCard');
 
-  const weatherCardHeader = document.createElement('h2');
-  weatherCardHeader.innerHTML = weatherData.location.name;
+    const weatherCardHeader = document.createElement('h2');
+    weatherCardHeader.innerHTML = weatherData.location.name;
 
-  const weatherIcon = document.createElement('img');
-  weatherIcon.src = weatherData.current.condition.icon;
+    const weatherIcon = document.createElement('img');
+    weatherIcon.src = weatherData.current.condition.icon;
 
-  const weatherCondition = document.createElement('p');
-  weatherCondition.innerHTML = `${weatherData.current.condition.text}`;
+    const weatherCondition = document.createElement('p');
+    weatherCondition.innerHTML = `${weatherData.current.condition.text}`;
 
-  const weatherTemperature = document.createElement('p');
-  weatherTemperature.innerHTML = `${weatherData.current.temp_c}°`;
+    const weatherTemperature = document.createElement('p');
+    weatherTemperature.innerHTML = `${weatherData.current.temp_c}°`;
 
-  const minTemperature = document.createElement('p');
-  minTemperature.innerHTML = `L:${weatherData.forecast.forecastday[0].day.mintemp_c}°`;
+    const minTemperature = document.createElement('p');
+    minTemperature.innerHTML = `L:${weatherData.forecast.forecastday[0].day.mintemp_c}°`;
 
-  const maxTemperature = document.createElement('p');
-  maxTemperature.innerHTML = `H:${weatherData.forecast.forecastday[0].day.maxtemp_c}°`;
+    const maxTemperature = document.createElement('p');
+    maxTemperature.innerHTML = `H:${weatherData.forecast.forecastday[0].day.maxtemp_c}°`;
 
-  const temperatureContainer = document.createElement('div');
-  temperatureContainer.classList.add('temperature-container');
-  temperatureContainer.append(maxTemperature, minTemperature);
+    const temperatureContainer = document.createElement('div');
+    temperatureContainer.classList.add('temperature-container');
+    temperatureContainer.append(maxTemperature, minTemperature);
 
-  const windSpeed = document.createElement('p');
-  windSpeed.innerHTML = `${weatherData.forecast.forecastday[0].day.maxwind_kph}km/h`;
-  const wind = document.createElement('p');
-  wind.innerHTML = 'Wind';
-  const windImage = new Image();
-  windImage.classList.add('icon');
-  windImage.src = Wind;
+    const windSpeed = document.createElement('p');
+    windSpeed.innerHTML = `${weatherData.forecast.forecastday[0].day.maxwind_kph}km/h`;
+    const wind = document.createElement('p');
+    wind.innerHTML = 'Wind';
+    const windImage = new Image();
+    windImage.classList.add('icon');
+    windImage.src = Wind;
 
-  const windContainer = document.createElement('div');
-  windContainer.append(windImage, windSpeed, wind);
+    const windContainer = document.createElement('div');
+    windContainer.append(windImage, windSpeed, wind);
 
-  const chanceOfRain = document.createElement('p');
-  chanceOfRain.innerHTML = `${weatherData.forecast.forecastday[0].day.daily_chance_of_rain}%`;
-  const rain = document.createElement('p');
-  rain.innerHTML = 'Rain';
-  const rainImage = new Image();
-  rainImage.classList.add('icon');
-  rainImage.src = Rain;
+    const chanceOfRain = document.createElement('p');
+    chanceOfRain.innerHTML = `${weatherData.forecast.forecastday[0].day.daily_chance_of_rain}%`;
+    const rain = document.createElement('p');
+    rain.innerHTML = 'Rain';
+    const rainImage = new Image();
+    rainImage.classList.add('icon');
+    rainImage.src = Rain;
 
-  const rainContainer = document.createElement('div');
-  rainContainer.append(rainImage, chanceOfRain, rain);
+    const rainContainer = document.createElement('div');
+    rainContainer.append(rainImage, chanceOfRain, rain);
 
-  const humidityPercent = document.createElement('p');
-  humidityPercent.innerHTML = `${weatherData.forecast.forecastday[0].day.avghumidity}%`;
-  const humidity = document.createElement('p');
-  humidity.innerHTML = 'Humidity';
-  const humidityImage = new Image();
-  humidityImage.classList.add('icon');
-  humidityImage.src = Humidity;
+    const humidityPercent = document.createElement('p');
+    humidityPercent.innerHTML = `${weatherData.forecast.forecastday[0].day.avghumidity}%`;
+    const humidity = document.createElement('p');
+    humidity.innerHTML = 'Humidity';
+    const humidityImage = new Image();
+    humidityImage.classList.add('icon');
+    humidityImage.src = Humidity;
 
-  const humidityContainer = document.createElement('div');
-  humidityContainer.append(humidityImage, humidityPercent, humidity);
+    const humidityContainer = document.createElement('div');
+    humidityContainer.append(humidityImage, humidityPercent, humidity);
 
-  const detailContainer = document.createElement('div');
-  detailContainer.append(windContainer, rainContainer, humidityContainer);
-  detailContainer.classList.add('detail-container');
+    const detailContainer = document.createElement('div');
+    detailContainer.append(windContainer, rainContainer, humidityContainer);
+    detailContainer.classList.add('detail-container');
 
-  weatherCard.append(
-    weatherCardHeader,
-    weatherIcon,
-    weatherCondition,
-    weatherTemperature,
-    temperatureContainer,
-    detailContainer
-  );
+    weatherCard.append(
+      weatherCardHeader,
+      weatherIcon,
+      weatherCondition,
+      weatherTemperature,
+      temperatureContainer,
+      detailContainer
+    );
 
-  const currentWeatherContainer = document.querySelector(
-    '.current-weather-container'
-  );
-  currentWeatherContainer.innerHTML = '';
-  currentWeatherContainer.append(weatherCard);
+    const currentWeatherContainer = document.querySelector(
+      '.current-weather-container'
+    );
+    currentWeatherContainer.innerHTML = '';
+    currentWeatherContainer.append(weatherCard);
 
-  displayHourlyForecast(weatherData);
-  displayFutureForecast(weatherData);
+    displayHourlyForecast(weatherData);
+    displayFutureForecast(weatherData);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 const weatherLocationForm = document.querySelector('#weatherLocationForm');

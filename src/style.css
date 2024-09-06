@@ -46,6 +46,12 @@ body {
     width: 100%;
 }
 
+#error-location {
+    margin-top: 10px;
+    color: red;
+    visibility: hidden;
+}
+
 #locationInput {
     width: 30%;
     height: 25px;
@@ -57,8 +63,9 @@ body {
 
 .search-header {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: end;
     grid-column: 1 / 3;
 }
 
